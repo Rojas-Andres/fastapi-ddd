@@ -8,7 +8,7 @@ from app.shared.auth import constants
 from app.shared.auth.auth_class import TokenHandler
 from app.shared.auth.exceptions import InvalidTokenError, TokenExpiredError
 from app.shared.exceptions import ValidationError
-from core.config import settings
+from app.core.config import settings
 from app.shared.utils.core.datetime import get_datetime_now
 
 

@@ -3,9 +3,7 @@ from typing import Callable, Optional
 from app.domain.base_domain.service_layer import messagebus
 from app.domain.base_domain.service_layer.unit_of_work import AbstractUnitOfWork
 from app.infrastructure.messaging import handlers
-
-# from app.notifications.base import AbstractNotification
-# from app.notifications.email.email import EmailNotification
+from app.modules.auth.adapters.unit_of_work import AuthUnitOfWork
 from app.shared.auth.auth_class import TokenHandler
 from app.shared.auth.jwt_handler import JWTToken
 
@@ -18,7 +16,7 @@ def bootstrap(
     publish: Optional[Callable] = None,
     # notify: Optional[AbstractNotification] = None,
 ) -> messagebus.MessageBus:
-    uow = uow or SqlAlchemyUnitOfWork()
+    uow = uow or AuthUnitOfWork()
     publish = publish or handlers.publish_async
     # notify = notify or EmailNotification()
     token_handler = token_handler or JWTToken()

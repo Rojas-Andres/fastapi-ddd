@@ -1,10 +1,8 @@
-from app.domain.authentication.adapters.repository import (
-    AbstractGroupRepository,
-    AbstractUserRepository,
+from app.modules.auth.domain.repository import (
+    AbstractAuthRepository,
 )
-from app.domain.base_domain.service_layer.unit_of_work import AbstractUnitOfWork
+from app.domain.base_domain.service_layer.unit_of_work import SqlAlchemyUnitOfWork
 
 
-class AbstractAuthUnitOfWork(AbstractUnitOfWork):
-    users: AbstractUserRepository
-    groups: AbstractGroupRepository
+class AbstractAuthUnitOfWork(SqlAlchemyUnitOfWork):
+    auth: AbstractAuthRepository

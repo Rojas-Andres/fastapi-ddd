@@ -5,6 +5,6 @@ from app.domain.base_domain.domain.message import Command
 
 
 @dataclass
-class AuthenticateUser(Command):
+class CreateUser(Command):
     email: str
     password: str

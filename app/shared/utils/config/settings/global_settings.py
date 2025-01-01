@@ -28,25 +28,25 @@ auth_path = "app.modules.auth"
 
 AUTH_COMMAND_HANDLERS: dict[str, str] = {
     f"{auth_path}.domain.commands.CreateUser": f"{auth_path}.service_layer.handlers.create_user",
-    f"{auth_path}.domain.commands.ExampleCommandTask": f"{auth_path}.service_layer.handlers.example_test",
+    # f"{auth_path}.domain.commands.ExampleCommandTask": f"{auth_path}.service_layer.handlers.example_test",
 }
 
 AUTH_COMMAND_ASYNC_HANDLERS: dict[str, str] = {}
 AUTH_EVENT_ASYNC_HANDLERS: dict[str, str] = {
-    f"{auth_path}.domain.events.UserCreated": [
-        "task_new_AUTH_notification",
-    ],
+    # f"{auth_path}.domain.events.UserCreated": [
+    #     "task_new_auth_notification",
+    # ],
 }
 # ASYNC TASKS
 AUTH_ASYNC_TASKS: dict[str, str] = {
-    "task_new_AUTH_notification": f"{auth_path}.tasks.task_new_auth_notification",
-    "task_example": f"{auth_path}.tasks.task_example",
+    "task_new_auth_notification": f"{auth_path}.tasks.task_new_auth_notification",
+    # "task_example": f"{auth_path}.tasks.task_example",
 }
 
 AUTH_EVENT_HANDLERS: dict[str, str] = {
-    f"{auth_path}.domain.events.NewUserNotification": [
-        f"{auth_path}.service_layer.handlers.new_AUTH_notification"
-    ],
+    # f"{auth_path}.domain.events.NewUserNotification": [
+    #     f"{auth_path}.service_layer.handlers.new_AUTH_notification"
+    # ],
 }
 # ########################
 # ASYNC TASKS QUEUE

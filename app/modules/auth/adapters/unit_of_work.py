@@ -1,10 +1,12 @@
 from app.modules.auth.adapters.sqlalchemy_repository import (
     AuthSqlAlchemyRepository,
 )
-from app.modules.auth.domain.repository import AbstractAuthRepository
+
+# from app.modules.auth.domain.repository import AbstractAuthRepository
+from app.modules.auth.service_layer.unit_of_work import AbstractAuthUnitOfWork
 
 
-class AuthUnitOfWork(AbstractAuthRepository):
+class AuthUnitOfWork(AbstractAuthUnitOfWork):
     """
     A unit of work implementation for the Category module using SQLAlchemy.
 

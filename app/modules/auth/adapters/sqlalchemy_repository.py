@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
 
-from app.infrastructure.database.models import CategoryORM
 from app.modules.auth.domain.repository import AbstractAuthRepository
-
+from app.infrastructure.database.models import UserOrm
 
 class AuthSqlAlchemyRepository(AbstractAuthRepository):
     def __init__(self, session):
@@ -13,7 +12,10 @@ class AuthSqlAlchemyRepository(AbstractAuthRepository):
         return ""
 
     def get_by_email(self, email: str):
-        return ""
+        user = self.session.query(UserOrm).filter(UserOrm.email == email).first()
+        if not user:
+            return None
+        return user
 
     def create(self, user):
         return ""
