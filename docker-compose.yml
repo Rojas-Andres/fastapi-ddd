@@ -29,7 +29,7 @@ services:
       - local
     restart: unless-stopped
 
-  fastapi:
+  worker:
     tty: true
     stdin_open: true
     build:
