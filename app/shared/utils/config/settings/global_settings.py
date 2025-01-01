@@ -13,6 +13,7 @@ from app.infrastructure.messaging.constants import QueueName
 ENVIRONMENT = os.getenv("ENVIRONMENT", "develop")
 PROJECT_NAME = os.getenv("PROJECT_NAME", "fastapi_stack")
 DEFAULT_RETRY_ATTEMPTS = 3
+MANAGEMENT_QUEUE: dict[str, str] = defaultdict(lambda: QUEUES_NAMES.QUEUE_DEFAULT)
 
 ASYNC_TASKS: dict[str, str] = {}
 
@@ -33,20 +34,20 @@ AUTH_COMMAND_HANDLERS: dict[str, str] = {
 
 AUTH_COMMAND_ASYNC_HANDLERS: dict[str, str] = {}
 AUTH_EVENT_ASYNC_HANDLERS: dict[str, str] = {
-    # f"{auth_path}.domain.events.UserCreated": [
-    #     "task_new_auth_notification",
-    # ],
+    f"{auth_path}.domain.events.UserCreated": [
+        "task_new_user_notification",
+    ],
 }
 # ASYNC TASKS
 AUTH_ASYNC_TASKS: dict[str, str] = {
-    "task_new_auth_notification": f"{auth_path}.tasks.task_new_auth_notification",
+    "task_new_user_notification": f"{auth_path}.tasks.task_new_user_notification",
     # "task_example": f"{auth_path}.tasks.task_example",
 }
 
 AUTH_EVENT_HANDLERS: dict[str, str] = {
-    # f"{auth_path}.domain.events.NewUserNotification": [
-    #     f"{auth_path}.service_layer.handlers.new_AUTH_notification"
-    # ],
+    f"{auth_path}.domain.events.NewUserNotification": [
+        f"{auth_path}.service_layer.handlers.new_user_notification"
+    ],
 }
 # ########################
 # ASYNC TASKS QUEUE

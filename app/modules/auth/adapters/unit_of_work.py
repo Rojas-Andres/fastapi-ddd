@@ -1,5 +1,5 @@
 from app.modules.auth.adapters.sqlalchemy_repository import (
-    AuthSqlAlchemyRepository,
+    UserSqlAlchemyRepository,
 )
 
 # from app.modules.auth.domain.repository import AbstractAuthRepository
@@ -19,4 +19,4 @@ class AuthUnitOfWork(AbstractAuthUnitOfWork):
 
     def __enter__(self):
         super().__enter__()
-        self.auth = AuthSqlAlchemyRepository(self.session)
+        self.user = UserSqlAlchemyRepository(self.session)

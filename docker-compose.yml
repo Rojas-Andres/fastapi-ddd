@@ -1,36 +1,5 @@
 services:
 
-  # fastapi:
-  #   tty: true
-  #   stdin_open: true
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.dev
-  #   environment:
-  #     - PIP_DEFAULT_TIMEOUT=100
-  #     - DATABASE=postgres
-  #     - POSTGRES_DB=postgres
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=postgres
-  #     - POSTGRES_PORT=5432
-  #     - POSTGRES_HOST=db
-  #   env_file:
-  #     - ./.env
-  #   ports:
-  #     - '8001:8001'
-  #   volumes:
-  #     - ./app:/project_fastapi/app
-  #     - ./alembic:/project_fastapi/alembic
-  #     - ./alembic.ini:/project_fastapi/alembic.ini
-  #     - ./tests:/project_fastapi/tests
-  #     - ${HOME}/.aws:/home/user/.aws:ro
-  #     - ${HOME}/.gitconfig:/home/user/.gitconfig:ro
-  #     - ${HOME}/.ssh:/home/user/.ssh:ro
-  #   depends_on:
-  #     - db
-  #   networks:
-  #     - local
-
   db:
     image: postgres:13.3
     environment:
@@ -59,6 +28,67 @@ services:
     networks:
       - local
     restart: unless-stopped
+
+  fastapi:
+    tty: true
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      - PIP_DEFAULT_TIMEOUT=100
+      - DATABASE=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=db
+    env_file:
+      - ./.env
+    ports:
+      - '8085:8085'
+    volumes:
+      - ./app:/project_fastapi/app
+      - ./alembic:/project_fastapi/alembic
+      - ./alembic.ini:/project_fastapi/alembic.ini
+      - ./tests:/project_fastapi/tests
+      - ${HOME}/.aws:/home/user/.aws:ro
+      - ${HOME}/.gitconfig:/home/user/.gitconfig:ro
+      - ${HOME}/.ssh:/home/user/.ssh:ro
+    depends_on:
+      - db
+    networks:
+      - local
+
+  celery-worker:
+    tty: true
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      - PIP_DEFAULT_TIMEOUT=100
+      - DATABASE=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=db
+    env_file:
+      - ./.env
+    volumes:
+      - ./app:/project_fastapi/app
+      - ./alembic:/project_fastapi/alembic
+      - ./alembic.ini:/project_fastapi/alembic.ini
+      - ./tests:/project_fastapi/tests
+      - ${HOME}/.aws:/home/user/.aws:ro
+      - ${HOME}/.gitconfig:/home/user/.gitconfig:ro
+      - ${HOME}/.ssh:/home/user/.ssh:ro
+    command: celery -A app.infrastructure.messaging.app worker -l info
+    depends_on:
+      - db
+    networks:
+      - local
 
 volumes:
   dev-db-data:

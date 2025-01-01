@@ -91,3 +91,6 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
 
     def rollback(self):
         self.session.rollback()
+
+    def flush(self):
+        self.session.flush()

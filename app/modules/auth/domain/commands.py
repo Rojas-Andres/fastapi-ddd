@@ -8,3 +8,5 @@ from app.domain.base_domain.domain.message import Command
 class CreateUser(Command):
     email: str
     password: str
+    first_name: str
+    last_name: str

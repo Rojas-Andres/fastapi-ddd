@@ -12,11 +12,13 @@ enable_utc = True
 timezone = "UTC"
 task_track_started = True
 broker_url = LOCAL_BROKER_URL
+
 broker_transport_options = {
     "predefined_queues": {
         settings.QUEUES_NAMES.QUEUE_DEFAULT: {"url": LOCAL_TASKS_QUEUE_URL},
     }
 }
+
 beat_schedule = {
     "task_example": {
         "task": "task_example",

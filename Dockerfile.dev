@@ -33,4 +33,5 @@ RUN mkdir -p $APP_HOME && chown user:user $APP_HOME
 USER user
 
 ENTRYPOINT ["bash", "/tmp/postgres-healthy.sh"]
-CMD uvicorn app.main:app --reload --port 8001 --host 0.0.0.0
+EXPOSE 8085
+CMD uvicorn app.main:app --reload --port 8085 --host 0.0.0.0
