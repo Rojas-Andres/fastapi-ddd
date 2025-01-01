@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Uvicorn",
+            "type": "python",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": ["app.main:app", "--reload", "--port", "8001"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Pytest local",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            // linux
+            "args": [
+                "${workspaceFolder}",
+                "-vv",
+                "-s"
+            ],
+            "justMyCode": true
+        },
+    ]
+}
