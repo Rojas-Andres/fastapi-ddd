@@ -1,0 +1,36 @@
+FROM python:3.11-slim-buster
+
+ENV PYTHONUNBUFFERED=1
+
+ENV PYTHONDONTWRITEBYTECODE=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    libcurl4-openssl-dev \
+    netcat \
+&& rm -rf /var/lib/apt/lists/*
+
+COPY requirements/common.txt /tmp/common.txt
+COPY requirements/local.txt /tmp/local.txt
+COPY requirements/test.txt /tmp/test.txt
+
+RUN pip install -Ur /tmp/local.txt
+
+ENV APP_HOME=/project_fastapi
+
+WORKDIR $APP_HOME
+COPY scripts_docker/start_dev.sh /usr/local/bin/start_dev.sh
+RUN chmod +x /usr/local/bin/start_dev.sh
+
+COPY scripts_docker/postgres-healthy.sh /tmp/postgres-healthy.sh
+
+RUN groupadd user && useradd --create-home --home-dir /home/user -g user user
+RUN mkdir -p $APP_HOME && chown user:user $APP_HOME
+
+USER user
+
+ENTRYPOINT ["bash", "/tmp/postgres-healthy.sh"]
+CMD uvicorn app.main:app --reload --port 8001 --host 0.0.0.0

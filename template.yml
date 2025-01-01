@@ -1,0 +1,224 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ECS Cluster with Fargate and Load Balancer
+
+Parameters:
+  Environment:
+    Description: Description
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: EnvironmentFastApi
+  StackName:
+    Description: Description
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: StackNameFastApi
+  VPCId:
+    Description: Description
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: VPCIdFastApi
+  PublicSubnetOne:
+    Description: Description
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: PublicSubnetOneFastApi
+  PublicSubnetTwo:
+    Description: PublicSubnetTwo
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: PublicSubnetTwoFastApi
+  PrivateSubnetOne:
+    Description: Description
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: PrivateSubnetOneFastApi
+  PrivateSubnetTwo:
+    Description: PrivateSubnetTwo
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: PrivateSubnetTwoFastApi
+  EcrRepositoryFastApi:
+    Description: Description
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: EcrRepositoryFastApi
+
+Resources:
+
+  PrivateDnsNamespaceVpc:
+    Type: AWS::ServiceDiscovery::PrivateDnsNamespace
+    Properties:
+      Name: !Sub ${StackName}${Environment}PrivateDnsNamespace
+      Vpc: !Ref VPCId
+      Description: "Private DNS namespace for tutorial service discovery"
+
+  EcsCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub "${StackName}${Environment}EcsCluster"
+
+
+  EcsExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AmazonECSTaskExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchGetImage
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:GetDownloadUrlForLayer
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - s3:ListBucket
+                  - s3:GetObject
+                  - s3:PutObject
+                  - sqs:SendMessage
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                  - dynamodb:CreateTable
+                  - dynamodb:PutItem
+                  - dynamodb:DescribeTable
+                  - dynamodb:DeleteItem
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                  - dynamodb:UpdateItem
+                Resource: "*"
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow inbound traffic on port 8080, 443
+      VpcId: !Ref VPCId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub "${StackName}${Environment}ALB"
+      Subnets:
+        - !Ref PublicSubnetOne
+        - !Ref PublicSubnetTwo
+      SecurityGroups:
+        - !Ref SecurityGroup
+      Scheme: internet-facing
+
+
+  ####  FastApi SERVICE CONFIGURATION
+
+  TaskDefinitionFastApi:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub "${StackName}${Environment}TaskFamilyFastApi"
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: "2048"
+      Memory: "4096"
+      ExecutionRoleArn: !GetAtt EcsExecutionRole.Arn
+      TaskRoleArn: !GetAtt EcsExecutionRole.Arn
+      ContainerDefinitions:
+        - Name: api-fastapi
+          Image: !Ref EcrRepositoryFastApi
+          Cpu: 0
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroupFastApi
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
+          PortMappings:
+            - ContainerPort: 8000
+              HostPort: 8000
+              Protocol: tcp
+          HealthCheck:
+            Command:
+              - CMD-SHELL
+              - "curl -f http://localhost:8000/healtcheck/ || exit 1"
+            Interval: 60
+            Timeout: 30
+            Retries: 3
+            StartPeriod: 30
+
+  TargetGroupFastApi:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub "${StackName}TGFastApi"
+      Port: 8000
+      Protocol: HTTP
+      VpcId: !Ref VPCId
+      TargetType: ip
+      HealthCheckPath: /healtcheck/
+      # HealthCheckIntervalSeconds: 60  # Intervalo de 60 segundos entre comprobaciones
+      # HealthCheckTimeoutSeconds: 15  # Tiempo de espera para cada comprobación de salud
+      # UnhealthyThresholdCount: 3      # Número de fallos consecutivos antes de marcar como no saludable
+      # HealthyThresholdCount: 5       # Número de éxitos consecutivos antes de marcar como saludable
+
+  ListenerFastApi:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 8000
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroupFastApi
+
+  PrivateDnsServiceFastApi:
+    Type: AWS::ServiceDiscovery::Service
+    Properties:
+      Name: !Sub "${StackName}${Environment}FastApiService"
+      NamespaceId: !Ref PrivateDnsNamespaceVpc
+      DnsConfig:
+        DnsRecords:
+          - Type: A
+            TTL: 60
+      HealthCheckCustomConfig:
+        FailureThreshold: 1
+
+
+  FargateServiceFastApi:
+    Type: AWS::ECS::Service
+    DependsOn:
+      - ListenerFastApi
+      - TargetGroupFastApi
+    Properties:
+      ServiceName: !Sub "${StackName}${Environment}FastApiService"
+      Cluster: !Ref EcsCluster
+      DesiredCount: 1
+      TaskDefinition: !Ref TaskDefinitionFastApi
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets:
+            - !Ref PublicSubnetOne
+            - !Ref PublicSubnetTwo
+          SecurityGroups:
+            - !Ref SecurityGroup
+          AssignPublicIp: ENABLED
+      ServiceRegistries:
+        - RegistryArn: !GetAtt PrivateDnsServiceFastApi.Arn
+          ContainerName: api-fastapi
+      LoadBalancers:
+        - ContainerName: api-fastapi
+          ContainerPort: 8000
+          TargetGroupArn: !Ref TargetGroupFastApi
+      EnableExecuteCommand: true
+
+  LogGroupFastApi:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/ecs/${StackName}${Environment}EcsClusterFastApi"
+      RetentionInDays: 14
