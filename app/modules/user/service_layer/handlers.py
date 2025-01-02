@@ -12,7 +12,7 @@ def change_password_user(
     uow: AbstractUserUnitOfWork,
     hasher: HasherAbstract,
 ) -> str:
-    logger.info("Create user handler")
+    logger.info("Change password user handler")
     with uow:
         user = uow.user.get_by_id(user_id=cmd.user_id)
         if not user:
@@ -25,3 +25,4 @@ def change_password_user(
             user_id=cmd.user_id, new_password=hasher.get_password_hash(cmd.new_password)
         )
         uow.commit()
+    logger.info("Change password user handler success")
