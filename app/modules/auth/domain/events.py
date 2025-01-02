@@ -1,6 +1,5 @@
 # Standard Library
 from dataclasses import dataclass
-from uuid import UUID
 
 # Libraries
 from app.domain.base_domain.domain.message import Event

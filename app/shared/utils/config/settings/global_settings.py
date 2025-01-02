@@ -1,9 +1,6 @@
 import os
 from collections import defaultdict
-from datetime import timedelta
-from enum import Enum
 from os import getenv
-from typing import Any
 
 from app.infrastructure.messaging.constants import QueueName
 

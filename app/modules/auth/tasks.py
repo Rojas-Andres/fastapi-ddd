@@ -1,5 +1,5 @@
 from app.modules.auth import bootstrap
-from app.modules.auth.domain import commands, events
+from app.modules.auth.domain import events
 
 
 def task_new_user_notification(user_id: str, *args, **kwargs) -> None:

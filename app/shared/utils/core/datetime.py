@@ -1,6 +1,5 @@
-from datetime import date, datetime
+from datetime import datetime
 from datetime import timezone as tz
-from typing import Union
 
 
 MONDAY = 0

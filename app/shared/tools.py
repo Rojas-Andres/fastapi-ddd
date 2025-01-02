@@ -161,7 +161,7 @@ def batch(iterable: list[Any], n: int = 1) -> Iterable:
     """
     size = len(iterable)
     for ndx in range(0, size, n):
-        yield iterable[ndx : min(ndx + n, size)]
+        yield iterable[ndx : min(ndx + n, size)]  # noqa
 
 
 def dict_factory(data: list[tuple[str, Any]]) -> dict[str, Any]:

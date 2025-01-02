@@ -2,11 +2,9 @@
 Base model
 """
 
-import uuid
 from datetime import datetime, timezone
 
 from sqlalchemy import Column, DateTime
-from sqlalchemy.dialects.postgresql import UUID
 
 from app.infrastructure.database.db import Base
 

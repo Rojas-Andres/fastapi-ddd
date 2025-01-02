@@ -2,14 +2,13 @@ import logging
 from app.modules.auth.domain import commands, events
 from app.modules.auth.service_layer.unit_of_work import AbstractAuthUnitOfWork
 from app.modules.auth.domain import models
-from sqlalchemy import text
-from app.shared.auth.hasher import Hasher
+from app.shared.auth.auth_class import HasherAbstract
 
 logger = logging.getLogger(__name__)
 
 
 def create_user(
-    cmd: commands.CreateUser, uow: AbstractAuthUnitOfWork, hasher: Hasher
+    cmd: commands.CreateUser, uow: AbstractAuthUnitOfWork, hasher: HasherAbstract
 ) -> str:
     logger.info("Create user handler")
     with uow:

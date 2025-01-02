@@ -19,6 +19,7 @@ exclude: >
       | app/modules/shared/domain/repository.py
       | app/core/middleware.py
       | param_update.py
+      | app/shared/utils/config/settings/global_settings.py
   )$
 repos:
   - repo: https://github.com/pycqa/flake8
