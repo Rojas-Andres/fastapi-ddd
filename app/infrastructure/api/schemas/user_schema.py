@@ -17,5 +17,18 @@ class UserCreateReturn(BaseModel):
     last_name: str
 
 
+class InputPostUserLogin(BaseModel):
+    email: str
+    password: str
+
+
+class OutputPostUserLogin(BaseModel):
+    jwt: str
+
+
 class CreateUserReturn(ResponseModel[UserCreateReturn]):
+    pass
+
+
+class OutputPostUserLoginReturn(ResponseModel[OutputPostUserLogin]):
     pass

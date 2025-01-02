@@ -19,22 +19,12 @@ class JWTToken(TokenHandler):
         payload: dict[str, Any],
         algorithm: Optional[str] = None,
         expires: Optional[datetime] = None,
-        type: Optional[str] = None,
         **kwargs,
     ):
         alg = algorithm or "HS256"
-        typ = type or "access"
         kid = kwargs.get("kid", uuid4().hex)
-
-        if typ.upper() not in settings.TOKEN_TYPES_LIST:
-            raise ValueError(f"type {typ} not configured")
-
-        if not expires:
-            conf = next(filter(lambda conf: conf["type"] == typ, settings.TOKEN_TYPES))
-            expires = get_datetime_now() + conf["expiration"]
-
         payload.update(exp=expires)
-        headers = {"alg": alg, "typ": typ, "kid": kid}
+        headers = {"alg": alg, "typ": "access", "kid": kid}
         token = jwt.encode(payload, settings.SECRET_KEY, headers=headers)
         return token
 

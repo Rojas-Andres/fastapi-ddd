@@ -9,3 +9,9 @@ class CreateUser(Command):
     password: str
     first_name: str
     last_name: str
+
+
+@dataclass
+class AuthenticateUser(Command):
+    email: str
+    password: str

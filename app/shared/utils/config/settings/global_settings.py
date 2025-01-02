@@ -26,6 +26,7 @@ auth_path = "app.modules.auth"
 
 AUTH_COMMAND_HANDLERS: dict[str, str] = {
     f"{auth_path}.domain.commands.CreateUser": f"{auth_path}.service_layer.handlers.create_user",
+    f"{auth_path}.domain.commands.AuthenticateUser": f"{auth_path}.service_layer.handlers.login_user",
     # f"{auth_path}.domain.commands.ExampleCommandTask": f"{auth_path}.service_layer.handlers.example_test",
 }
 

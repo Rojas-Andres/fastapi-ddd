@@ -20,7 +20,7 @@ class Settings:
     environment variables. Default values are provided if the environment variables
     are not set."""
 
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "")
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "secret_key")
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "test")
     DATABASE_USER: str = os.getenv("DATABASE_USER", "postgres")
     DATABASE_PASSWORD: str = os.getenv("DATABASE_PASSWORD", "postgres")

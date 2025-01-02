@@ -14,7 +14,6 @@ class TokenHandler(ABC):
         payload: dict[str, Any],
         algorithm: Optional[str] = None,
         expires: Optional[datetime] = None,
-        type: Optional[str] = None,
         **kwargs,
     ) -> Token:  # type: ignore
         """Register a token with parameters"""

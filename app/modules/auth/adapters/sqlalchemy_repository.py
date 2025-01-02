@@ -27,7 +27,13 @@ class UserSqlAlchemyRepository(AbstractUserRepository):
         user = self.session.query(UserOrm).filter(UserOrm.email == email).first()
         if not user:
             return None
-        return user
+        return UserSchema(
+            id=user.id,
+            email=user.email,
+            password=user.password,
+            first_name=user.first_name,
+            last_name=user.last_name,
+        )
 
     def create(self, user: User) -> UserSchema:
         user = UserOrm(
