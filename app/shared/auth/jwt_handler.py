@@ -31,7 +31,6 @@ class JWTToken(TokenHandler):
     @classmethod
     def decode(cls, token: str, **kwargs) -> dict[str, Any]:
         try:
-            token = token.split(" ").pop()
             headers = jwt.get_unverified_header(jwt=token)
             payload = jwt.decode(
                 token,
@@ -39,8 +38,6 @@ class JWTToken(TokenHandler):
                 algorithms=[headers.get("alg")],
             )
             payload |= headers
-            if not constants.TokenTypes.has_value(payload.get("typ")):
-                raise ValidationError("Invalid Token Type")
             return payload
         except jwt.ExpiredSignatureError as e:
             raise TokenExpiredError(str(e))

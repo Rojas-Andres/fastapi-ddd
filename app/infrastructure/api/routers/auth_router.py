@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from app.modules.auth import bootstrap
 from app.modules.auth.domain import commands
 from app.modules.auth.domain.models import User
-from app.infrastructure.api.schemas.user_schema import (
+from app.infrastructure.api.schemas.auth_schema import (
     CreateUserReturn,
     OutputPostUserLoginReturn,
     InputPostUserLogin,

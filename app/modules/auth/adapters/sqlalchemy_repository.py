@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.modules.auth.domain.repository import AbstractUserRepository
 from app.infrastructure.database.models import UserOrm
 from app.modules.auth.domain.models import User
-from app.infrastructure.api.schemas.user_schema import UserSchema
+from app.infrastructure.api.schemas.auth_schema import UserSchema
 
 
 class UserSqlAlchemyRepository(AbstractUserRepository):

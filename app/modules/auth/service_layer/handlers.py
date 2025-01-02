@@ -3,7 +3,7 @@ from app.modules.auth.domain import commands, events
 from app.modules.auth.service_layer.unit_of_work import AbstractAuthUnitOfWork
 from app.modules.auth.domain import models
 from app.shared.auth.auth_class import HasherAbstract, TokenHandler
-from app.infrastructure.api.schemas.user_schema import (
+from app.infrastructure.api.schemas.auth_schema import (
     UserCreateReturn,
     OutputPostUserLogin,
 )

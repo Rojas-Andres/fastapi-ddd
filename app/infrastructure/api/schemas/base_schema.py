@@ -11,3 +11,7 @@ class ResponseModel(BaseModel, Generic[T]):
     """
 
     data: T
+
+
+class CurrentUser(BaseModel):
+    user_id: int
