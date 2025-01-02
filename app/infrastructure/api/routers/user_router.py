@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from app.modules.auth import bootstrap
-from app.modules.auth.domain import commands
+from app.modules.user import bootstrap
+from app.modules.user.domain import commands
 from app.modules.auth.domain.models import User
 from app.infrastructure.api.schemas.user_schema import InputPostChangePassword
 from app.shared.auth.role_checker import RoleChecker
@@ -12,7 +12,7 @@ router = APIRouter()
 @router.post(
     "/change_password",
 )
-def api_register(
+def api_change_password(
     user: InputPostChangePassword,
     current_user=Depends(
         RoleChecker(
@@ -34,4 +34,10 @@ def api_register(
     Returns:
         CreateUserReturn: An object containing the data of the newly created user.
     """
-    return {"response": "Create user"}
+    bus = bootstrap.bootstrap()
+    cmd = commands.ChangePasswordUser(
+        **user.dict(),
+        user_id=current_user.user_id,
+    )
+    [_] = bus.handle(cmd)
+    return {"response": "Change password success"}

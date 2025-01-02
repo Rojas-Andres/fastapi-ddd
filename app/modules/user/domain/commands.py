@@ -7,3 +7,4 @@ from app.domain.base_domain.domain.message import Command
 class ChangePasswordUser(Command):
     current_password: str
     new_password: str
+    user_id: int

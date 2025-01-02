@@ -47,6 +47,21 @@ AUTH_EVENT_HANDLERS: dict[str, str] = {
         f"{auth_path}.service_layer.handlers.new_user_notification"
     ],
 }
+
+user_path = "app.modules.user"
+
+USER_COMMAND_HANDLERS: dict[str, str] = {
+    f"{user_path}.domain.commands.ChangePasswordUser": f"{user_path}.service_layer.handlers.change_password_user",
+}
+
+USER_COMMAND_ASYNC_HANDLERS: dict[str, str] = {}
+USER_EVENT_ASYNC_HANDLERS: dict[str, str] = {}
+# ASYNC TASKS
+USER_ASYNC_TASKS: dict[str, str] = {}
+
+USER_EVENT_HANDLERS: dict[str, str] = {}
+
+
 # ########################
 # ASYNC TASKS QUEUE
 QUEUES_NAMES = QueueName

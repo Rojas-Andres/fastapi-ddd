@@ -12,10 +12,6 @@ class AbstractUserRepository(abc.ABC, Generic[_M]):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_by_email(self, email: str) -> Optional[models.User]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
     def change_password(
         self, user_id: int, current_password: str, new_password: str
     ) -> Optional[models.User]:
