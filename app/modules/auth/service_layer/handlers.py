@@ -3,6 +3,7 @@ from app.modules.auth.domain import commands, events
 from app.modules.auth.service_layer.unit_of_work import AbstractAuthUnitOfWork
 from app.modules.auth.domain import models
 from app.shared.auth.auth_class import HasherAbstract
+from app.infrastructure.api.schemas.user_schema import UserCreateReturn
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,12 @@ def create_user(
         uow.commit()
         user_id = user.id
     uow.add_event(events.UserCreated(user_id=user_id))
+    return UserCreateReturn(
+        id=user_id,
+        email=user.email,
+        first_name=user.first_name,
+        last_name=cmd.last_name,
+    )
 
 
 def new_user_notification(

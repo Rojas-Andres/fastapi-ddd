@@ -10,5 +10,4 @@ class ResponseMapperException(ExceptionMapper):
         self.data = data
 
 
-class ValidationError(ExceptionMapper):
-    ...
+class ValidationError(ExceptionMapper): ...

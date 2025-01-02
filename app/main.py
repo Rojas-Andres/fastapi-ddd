@@ -13,7 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.add_middleware(ErrorHandlerMiddleware)
-app.include_router(auth_router.router, prefix="/api/v1/user", tags=["user"])
+app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["auth"])
 
 
 @app.get("/healtcheck/")
