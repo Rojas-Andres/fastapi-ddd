@@ -3,28 +3,30 @@ from app.modules.auth.domain import commands, events
 from app.modules.auth.service_layer.unit_of_work import AbstractAuthUnitOfWork
 from app.modules.auth.domain import models
 from sqlalchemy import text
+from app.shared.auth.hasher import Hasher
 
 logger = logging.getLogger(__name__)
 
 
-def create_user(cmd: commands.CreateUser, uow: AbstractAuthUnitOfWork) -> str:
+def create_user(
+    cmd: commands.CreateUser, uow: AbstractAuthUnitOfWork, hasher: Hasher
+) -> str:
     logger.info("Create user handler")
     with uow:
-        print("call command success")
         user_exist = uow.user.get_by_email(email=cmd.email)
         if user_exist:
             raise ValueError("User already exists")
+        hashed_password = hasher.get_password_hash(cmd.password)
         user = uow.user.create(
             models.User(
                 email=cmd.email,
-                password=cmd.password,
+                password=hashed_password,
                 first_name=cmd.first_name,
                 last_name=cmd.last_name,
             )
         )
         uow.commit()
         user_id = user.id
-        print("User not exists")
     uow.add_event(events.UserCreated(user_id=user_id))
 
 
