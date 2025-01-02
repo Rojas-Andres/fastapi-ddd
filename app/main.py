@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.middleware import ErrorHandlerMiddleware  # noqa: E402
 from app.infrastructure.api.routers import auth_router
 
-app = FastAPI(title="Aplicación My World", version="0.1.0")
+app = FastAPI(title="FastAPI DDD Architecture", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
